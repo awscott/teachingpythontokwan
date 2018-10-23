@@ -6,10 +6,10 @@ def main(max_number):
 	#write code here
 	#...
 	perfect = []
-	for num in range(0, max_number+1):
+	for num in range(2, max_number+1):
 		if is_perfect(num):
 			perfect.append(num) 
-	print(perfect) 
+	return perfect
 
 
 def is_perfect(number):

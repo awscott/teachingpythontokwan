@@ -1,16 +1,19 @@
 import sys
 
 
-def main(max_number):
+def find_all_perfect(max_number):
 
 	print(max_number)
 	#write code here
 	#...
-	perfect = []
+	perfect_numbers = []
 	if is_perfect(max_number):
-		perfect.append(max_number) #this is how you add things to a list. with list.append(), there is also remove() and pop() and so on...
-	print(perfect) #delete all this and write your code, google if you need to
+		perfect_numbers.append(max_number) #this is how you add things to a list. with list.append(), there is also remove() and pop() and so on...
+	print(perfect_numbers) #delete all this and write your code, google if you need to
 
+
+
+	return perfect_numbers
 
 
 def is_perfect(number):
@@ -32,4 +35,4 @@ def is_perfect(number):
 
 if __name__ == '__main__':
 	max_number = int(sys.argv[1])# python perf.py 10000
-	main(max_number) #should print 6 496 8128
+	print(find_all_perfect(max_number))

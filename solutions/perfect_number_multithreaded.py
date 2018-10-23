@@ -5,6 +5,29 @@ import os
 import argparse
 import time
 
+def make_threads_and_pool(function,num_threads = None,max_number = None):
+	""" takes in a function object and the number of threads and max number to check
+		will call a function that takes a list with [start_of_range,end_of_range] and join all results.
+	"""
+	chunk_size = int(max_number / num_threads)
+	last = 0
+	proc_args = []
+
+	for i in range(1, num_threads +1): 
+		low = last
+		high = low + chunk_size
+		if i == num_threads: #on the case that the chunck size truncated
+			high = max_number
+		last = high
+		proc_args.append((low,high))
+		print('process:',i,'has',low,'and',high)
+		#makes a new process for each range of max number / 5 until max
+	pool = Pool(processes=num_threads)
+	list_perf = []
+
+	for result in pool.map(function, proc_args):
+		list_perf.extend(result)
+	return list_perf
 
 def find_perf_in_range(range_list):
 	low, max_number = range_list #breaks up list of 2 and asignes them to vars
@@ -14,7 +37,8 @@ def find_perf_in_range(range_list):
 	perfect = []
 	for num in range(low, max_number+1):
 		if is_perfect(num):
-			perfect.append(num) 
+			if num != 1:
+				perfect.append(num) 
 	return perfect
 
 
@@ -78,30 +102,15 @@ if __name__ == '__main__':
 	parser.add_argument('-t',type=int,help='The amount of threads [default:5]',default=5)
 	parser.add_argument('-T',help='output the amount of time elapsed during run',action='store_true')
 	args = parser.parse_args()
+
+
 	if args.T:
 		time1 = time.time()
-	num_threads = args.t
-	max_number = args.maximum
-	chunk_size = int(max_number / num_threads)
-	last = 0
-	proc_args = []
-
-	for i in range(1, num_threads +1): 
-		low = last
-		high = low + chunk_size
-		if i == num_threads: #on the case that the chunck size truncated
-			high = max_number
-		last = high
-
-		proc_args.append((low,high))
-		print('process:',i,'has',low,'and',high)
-		#makes a new process for each range of max number / 5 until max
-	pool = Pool(processes=num_threads)
-	list_perf = []
-	for result in pool.map(find_perf_in_range, proc_args):
-		list_perf.extend(result)
-	print(list_perf)
+	perfects = make_threads_and_pool(find_perf_in_range,args.t,args.maximum)
 	if args.T:
 		time2 = time.time()
+		print(perfects)
 		print ('\nElapsed time %.3fs' % (time2-time1))
+	else:
+		print(perfects)
 	print('done')

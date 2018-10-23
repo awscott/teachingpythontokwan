@@ -1,17 +1,14 @@
 import sys
 
 
-def main(max_number):
-	
-	print(max_number)
-	#write code here
-	#...
+def find_all_perfect(max_number):
+
 	perfect = []
 	for num in range(0, max_number+1):
 		if is_perfect(num):
 			perfect.append(num) 
 
-	print(perfect[1:]) 
+	return perfect[1:]
 
 
 
@@ -57,4 +54,4 @@ def sum_list(num_list):
 
 if __name__ == '__main__':
 	max_number = int(sys.argv[1])
-	main(max_number)
+	print(find_all_perfect(max_number))

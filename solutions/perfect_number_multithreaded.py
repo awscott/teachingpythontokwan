@@ -1,10 +1,13 @@
 import sys
 import threading
-from multiprocessing import Process
+from multiprocessing import Pool
 import os
+import argparse
+import time
 
-def find_perf_in_range(low,max_number):
-	
+
+def find_perf_in_range(range_list):
+	low, max_number = range_list #breaks up list of 2 and asignes them to vars
 
 	#write code here
 	#...
@@ -12,7 +15,7 @@ def find_perf_in_range(low,max_number):
 	for num in range(low, max_number+1):
 		if is_perfect(num):
 			perfect.append(num) 
-	print( perfect )
+	return perfect
 
 
 
@@ -70,11 +73,19 @@ def sum_list(num_list):
 	return total
 
 if __name__ == '__main__':
-	max_number = int(sys.argv[1])
-	chunk_size = int(max_number / 5)
+	parser = argparse.ArgumentParser(description='find perfect numbers below maximum')
+	parser.add_argument('maximum', type=int,help='the highest value to check for perfect number under')
+	parser.add_argument('-t',type=int,help='The amount of threads [default:5]',default=5)
+	parser.add_argument('-T',help='output the amount of time elapsed during run',action='store_true')
+	args = parser.parse_args()
+	if args.T:
+		time1 = time.time()
+	num_threads = args.t
+	max_number = args.maximum
+	chunk_size = int(max_number / num_threads)
 	last = 0
-	procs = []
-	num_threads = 5
+	proc_args = []
+
 	for i in range(1, num_threads +1): 
 		low = last
 		high = low + chunk_size
@@ -82,13 +93,15 @@ if __name__ == '__main__':
 			high = max_number
 		last = high
 
-
+		proc_args.append((low,high))
 		print('process:',i,'has',low,'and',high)
 		#makes a new process for each range of max number / 5 until max
-		proc = Process(target=find_perf_in_range, args=(low,high))
-		procs.append(proc)
-		proc.start()
-
-	for proc in procs:
-		proc.join() #end the process
+	pool = Pool(processes=num_threads)
+	list_perf = []
+	for result in pool.map(find_perf_in_range, proc_args):
+		list_perf.extend(result)
+	print(list_perf)
+	if args.T:
+		time2 = time.time()
+		print ('\nElapsed time %.3fs' % (time2-time1))
 	print('done')

@@ -1,5 +1,5 @@
 import sys
-#basic perfect numbers solution
+# basic perfect numbers solution
 def main(max_number):
 	
 	print(max_number)

@@ -38,7 +38,7 @@ class TestPerfectNumber(unittest.TestCase):
 				continue
 			self.assertFalse(is_perfect(i))
 	def test_all_perfect(self):
-		p_numbers = [1, 6, 28, 496, 8128]
+		p_numbers = [6, 28, 496, 8128]
 		kwan_perf = find_all_perfect(10000)
 		self.assertEqual(p_numbers,kwan_perf)
 
